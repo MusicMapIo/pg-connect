@@ -6,12 +6,18 @@ var pg = require('pg'),
 
 var pgc = module.exports = function(options) {
 	options = options || {};
-	pgc.user = options.user || process.env.POSTGRES_USER;
-	pgc.password = options.password || process.env.POSTGRES_PASSWORD;
-	pgc.host = options.host || process.env.POSTGRES_HOST;
-	pgc.db = options.db || process.env.POSTGRES_DB;
 	pgc.ssl = options.ssl || false;
-	pgc.connectionString = util.format('postgres://%s:%s@%s/%s', pgc.user, pgc.password, pgc.host, pgc.db);
+
+	if (options.url) {
+		pgc.connectionString = options.url;
+	}
+	else 
+	{	pgc.user = options.user || process.env.POSTGRES_USER;
+		pgc.password = options.password || process.env.POSTGRES_PASSWORD;
+		pgc.host = options.host || process.env.POSTGRES_HOST;
+		pgc.db = options.db || process.env.POSTGRES_DB;
+		pgc.connectionString = util.format('postgres://%s:%s@%s/%s', pgc.user, pgc.password, pgc.host, pgc.db);
+	}
 	return pgc;
 };
 
