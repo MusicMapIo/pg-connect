@@ -10,12 +10,18 @@ var pgc = module.exports = function(options) {
 	pgc.password = options.password || process.env.POSTGRES_PASSWORD;
 	pgc.host = options.host || process.env.POSTGRES_HOST;
 	pgc.db = options.db || process.env.POSTGRES_DB;
+	pgc.ssl = options.ssl || false;
 	pgc.connectionString = util.format('postgres://%s:%s@%s/%s', pgc.user, pgc.password, pgc.host, pgc.db);
 	return pgc;
 };
 
 // Get a connection, log err on failure
 pgc.connect = function(done) {
+
+	if (pgc.ssl) {
+		pg.defaults.ssl = true;
+	}
+
 	pg.connect(pgc.connectionString, function(err, client, release) {
 		if (err) {
 			logger.error(err, {
